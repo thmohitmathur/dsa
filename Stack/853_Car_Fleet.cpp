@@ -1,33 +1,26 @@
 class Solution {
 public:
+    // ok so basically we find the nearest position to the target by calculating time then sort then in descending (near target) push on the stack only if it's not able to catch up monotonic ascending stack
     int carFleet(int target, vector<int>& position, vector<int>& speed) {
+        vector<pair<int,int>> ps;
+        stack<double> st;
         int n = position.size();
-        if (n == 0) return 0;
-
-        vector<pair<int, int>> ps;
-        // Using a stack of doubles to prevent decimal truncation
-        stack<double> st; 
-        
-        for (int i = 0; i < n; i++) {
+        if(n == 0) return 0;
+        for(int i = 0; i < n; i++){
             ps.push_back({position[i], speed[i]});
         }
-        
-        // Sort descending: cars closest to the target will be processed first
         sort(ps.rbegin(), ps.rend());
 
-        for (int i = 0; i < n; i++) {
-            // Fix: Access individual pairs with ps[i] and use double for precise time
+        for(int i = 0; i < n; i++){
             double time = (double)(target - ps[i].first) / ps[i].second;
 
-            // If the stack is empty, or this car takes MORE time than the fleet in front of it,
-            // it cannot catch up. It forms a brand new fleet!
             if (st.empty() || time > st.top()) {
                 st.push(time);
             }
-            // If time <= st.top(), this car catches up to the fleet in front 
-            // and simply becomes part of it (we do nothing).
-        }
-
+            
+        } // 1 1 7 3 12
+            // 1 1 7 3 12
         return st.size();
+
     }
 };
